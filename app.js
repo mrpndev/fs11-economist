@@ -29,6 +29,9 @@ app.use(headers)
 // we add the validator preceeding auth routes
 app.use(authValidator, authRoutes)
 app.use(routes)
+app.use((req, res) => {
+	res.status(404).sendFile(`${__dirname}/public/index.html`)
+})
 app.use(errorHandler);
 
 app.listen(PORT, HOST, () => {

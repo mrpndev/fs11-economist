@@ -5,10 +5,10 @@ const cors = require("cors")
 
 const PORT = process.env.PORT
 const HOST = process.env.HOST
-const authRoutes = require("./controllers/authRoutes")
-const routes = require("./controllers/routes")
-const authValidator = require("./validators/authValidator")
-const errorHandler = require("./helpers/errorHandler")
+const authRoutes = require("./routes/auth.routes")
+const routes = require("./routes/api.routes")
+const authValidator = require("./middlewares/authValidator")
+const errorHandler = require("./middlewares/errorHandler")
 const headers = require("./middlewares/headers")
 const rateLimiter = require("./middlewares/rateLimiter")
 

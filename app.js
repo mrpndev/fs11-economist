@@ -11,6 +11,7 @@ const authValidator = require("./middlewares/authValidator")
 const errorHandler = require("./middlewares/errorHandler")
 const headers = require("./middlewares/headers")
 const rateLimiter = require("./middlewares/rateLimiter")
+const { db } = require("./db")
 
 /* 
 	? Middleware Chaining
@@ -34,8 +35,17 @@ app.use((req, res) => {
 })
 app.use(errorHandler);
 
-app.listen(PORT, HOST, () => {
-	console.log(`[server] running on ${HOST}:${PORT}`)
+app.listen(PORT, HOST, async () => {
+	try {
+		// establish connection to existing database
+		await db.authenticate()
+		// syncs all of our schemas to the database
+		await db.sync({ force: false })
+		console.log(`[server] running on ${HOST}:${PORT}`)
+		console.log(`[database] running`)
+	} catch(err) {
+		console.error(err)
+	}
 })
 
 /* 

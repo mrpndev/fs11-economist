@@ -1,9 +1,9 @@
 function authValidator(req, res, next) {
 
 	if (req.url === "/register") {
-		let { fullName, email, address, password } = req.body;
+		let { full_name, email, address, password } = req.body;
 	
-		if (!fullName) {
+		if (!full_name) {
 			// ? Guard Clauses
 			return res.status(400).json({
 				message: "Name, email, address, and password required",

@@ -1,9 +1,13 @@
 const { Countries } = require("../models/api.model");
 const { Sequelize } = require("../db");
 
-let getAll = (req, res) => {
+let getAll = async (req, res) => {
+	console.log(req.headers)
+
+	let foundCountries = await Countries.findAll()
+
 	res.status(200).json({
-		message: `${req.method} ${req.originalUrl} route`,
+		message: foundCountries
 	});
 };
 

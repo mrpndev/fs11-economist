@@ -12,6 +12,7 @@ const errorHandler = require("./middlewares/errorHandler")
 const headers = require("./middlewares/headers")
 const rateLimiter = require("./middlewares/rateLimiter")
 const { db } = require("./db")
+const validateRoutes = require("./middlewares/validate")
 
 /* 
 	? Middleware Chaining
@@ -29,7 +30,7 @@ app.use(express.json())
 app.use(headers)
 // we add the validator preceeding auth routes
 app.use(authValidator, authRoutes)
-app.use(routes)
+app.use(validateRoutes, routes)
 app.use((req, res) => {
 	res.status(404).sendFile(`${__dirname}/public/index.html`)
 })

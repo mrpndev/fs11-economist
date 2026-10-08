@@ -6,6 +6,7 @@
 */
 const jwt = require("jsonwebtoken")
 const JWT_KEY = process.env.JWT_KEY
+const { User } = require("../models/auth.model")
 
 let validateSession = (req, res, next) => {
 	// ? prefilght request - checks what's allowed by the server
@@ -26,8 +27,12 @@ let validateSession = (req, res, next) => {
 		? req.headers.authorization.split(" ")[1]
 		: req.headers.authorization
 
+	// Debug the incoming token before verification; decoded data is untrusted.
+	console.log("Received JWT:", authToken)
+	console.log("Received JWT payload (unverified):", jwt.decode(authToken))
+
 	// ? jwt verifies if token generated using our key
-	let payload = jwt.verify(authToken, JWT_KEY, (err, payload) => {
+	let payload = jwt.verify(authToken, JWT_KEY, async (err, payload) => {
 		if (err) {
 			console.error(err)
 			return res.status(403).json({
@@ -35,7 +40,12 @@ let validateSession = (req, res, next) => {
 			})
 		}
 
-		req.user = payload
+		let user = await User.findByPk(payload.id)
+
+		// ? Safer than trusting the request
+		// ? Comes from database and can be validated
+		req.user = user
+		console.log(req.user)
 
 		next()
 	})

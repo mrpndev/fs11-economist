@@ -33,6 +33,15 @@ const User = db.define(
 				min: 10,
 			},
 		},
+		role: {
+			type: DataTypes.ENUM(
+				"viewer",
+				"editor",
+				"admin"
+			),
+			allowNull: false,
+			defaultValue: "viewer"
+		}
 	},
 	{
 		timestamps: true,

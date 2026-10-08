@@ -41,7 +41,8 @@ app.listen(PORT, HOST, async () => {
 		// establish connection to existing database
 		await db.authenticate()
 		// syncs all of our schemas to the database
-		await db.sync({ force: false })
+		await db.sync()
+		// got rid of { force: false } to let migrations handle schema changes
 		console.log(`[server] running on ${HOST}:${PORT}`)
 		console.log(`[database] running`)
 	} catch(err) {

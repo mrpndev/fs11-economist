@@ -9,8 +9,8 @@ const jwt = require("jsonwebtoken");
 // import our secret key
 const JWT_KEY = process.env.JWT_KEY;
 
+
 let registerUser = async (req, res) => {
-	console.log(req.body);
 	let { full_name, email, address, password } = req.body;
 
 	// call create on your User schema and pass the data
@@ -21,7 +21,6 @@ let registerUser = async (req, res) => {
 		// ? generate hash of the password
 		password: bcrypt.hashSync(password, SALT),
 	});
-	console.log(newUser);
 
 	// ? Generate a token
 	const token = jwt.sign(
@@ -31,7 +30,6 @@ let registerUser = async (req, res) => {
 		// options (expiration)
 		{ expiresIn: "24h" }
 	);
-	console.log(token);
 
 	res.status(201).json({
 		message: `User created`,
@@ -41,7 +39,6 @@ let registerUser = async (req, res) => {
 };
 
 let loginUser = async (req, res) => {
-	// console.log(req.body)
 	const { email, password } = req.body;
 
 	// findOne accepts query object where we match email from db to email from req
@@ -90,19 +87,27 @@ let loginUser = async (req, res) => {
 };
 
 let resetPassword = async (req, res) => {
-	const { email, password } = req.body;
+	const { email, currentPassword, newPassword } = req.body;
 
-	let foundUser = await User.findOne({ where: { email } });
+	// let foundUser = await User.findOne({ where: { email } });
 
-	if (!foundUser) {
-		return res.status(500).json({
-			message: "User not found",
-		});
+	// if (!foundUser) {
+	// 	return res.status(500).json({
+	// 		message: "User not found",
+	// 	});
+	// }
+
+	let validPassword = await bcrypt.compare(currentPassword, req.user.password)
+
+	if (!validPassword) {
+		return res.status(403).json({
+			message: "Incorrect current password"
+		})
 	}
 
-	foundUser.password = bcrypt.hashSync(password, SALT);
+	req.user.password = bcrypt.hashSync(newPassword, SALT);
 
-	await foundUser.save();
+	await req.user.save();
 
 	res.status(200).json({
 		message: "Password Updated",
